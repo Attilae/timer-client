@@ -28,7 +28,18 @@ export function getAllPolls(page, size) {
     size = size || POLL_LIST_SIZE;
 
     return request({
-        url: API_BASE_URL + "/polls?page=" + page + "&size=" + size,
+        //url: API_BASE_URL + "/polls?page=" + page + "&size=" + size,
+        url: API_BASE_URL + "/polls",
+        method: 'GET'
+    });
+}
+
+export function getAllTimers(page, size) {
+    page = page || 0;
+    size = size || POLL_LIST_SIZE;
+
+    return request({
+        url: API_BASE_URL + "/timer?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }
@@ -38,6 +49,14 @@ export function createPoll(pollData) {
         url: API_BASE_URL + "/polls",
         method: 'POST',
         body: JSON.stringify(pollData)         
+    });
+}
+
+export function createTimer(timerData) {
+    return request({
+        url: API_BASE_URL + "/timer",
+        method: 'POST',
+        body: JSON.stringify(timerData)
     });
 }
 
@@ -103,7 +122,8 @@ export function getUserCreatedPolls(username, page, size) {
     size = size || POLL_LIST_SIZE;
 
     return request({
-        url: API_BASE_URL + "/users/" + username + "/polls?page=" + page + "&size=" + size,
+        //url: API_BASE_URL + "/users/" + username + "/polls?page=" + page + "&size=" + size,
+        url: API_BASE_URL + "/users/" + username + "/polls",
         method: 'GET'
     });
 }

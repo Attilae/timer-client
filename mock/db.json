@@ -1,0 +1,49 @@
+{
+  "me": {
+    "id": 2,
+    "username": "attila.erdei",
+    "name": "Attila Erdei"
+  },
+  "polls": [
+    {
+      "content": [
+        {
+          "id": 1,
+          "question": "Csinálok egy szavazást",
+          "choices": [
+            {
+              "id": 1,
+              "text": "Első válasz",
+              "voteCount": 0
+            },
+            {
+              "id": 2,
+              "text": "Második válasz",
+              "voteCount": 1
+            },
+            {
+              "id": 3,
+              "text": "Harmadik válasz",
+              "voteCount": 0
+            }
+          ],
+          "createdBy": {
+            "id": 2,
+            "username": "attila.erdei",
+            "name": "Attila Erdei"
+          },
+          "creationDateTime": "2018-06-09T22:11:25Z",
+          "expirationDateTime": "2018-06-10T22:11:25Z",
+          "selectedChoice": 2,
+          "totalVotes": 1,
+          "expired": false
+        }
+      ],
+      "page": 0,
+      "size": 30,
+      "totalElements": 1,
+      "totalPages": 1,
+      "last": true
+    }
+  ]
+}
