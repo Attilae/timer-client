@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { getAllPolls, getUserCreatedPolls, getUserVotedPolls } from '../util/APIUtils';
-import Poll from './Poll';
+import { getAllActivities, getUserCreatedActivities, getUserVotedPolls } from '../util/APIUtils';
+import Activity from './Activity';
 import { castVote } from '../util/APIUtils';
 import LoadingIndicator  from '../common/LoadingIndicator';
 import { Button, Icon, notification } from 'antd';
-import { POLL_LIST_SIZE } from '../constants';
+import { ACTIVITY_LIST_SIZE } from '../constants';
 import { withRouter } from 'react-router-dom';
-import './PollList.css';
+import './ActivityList.css';
 
-class PollList extends Component {
+class ActivityList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            polls: [],
+            activities: [],
             page: 0,
             size: 10,
             totalElements: 0,
@@ -21,20 +21,21 @@ class PollList extends Component {
             currentVotes: [],
             isLoading: false
         };
-        this.loadPollList = this.loadPollList.bind(this);
+        this.loadActivityList = this.loadActivityList.bind(this);
         this.handleLoadMore = this.handleLoadMore.bind(this);
     }
 
-    loadPollList(page = 0, size = POLL_LIST_SIZE) {
+    loadActivityList(page = 0, size = ACTIVITY_LIST_SIZE) {
         let promise;
         if(this.props.username) {
-            if(this.props.type === 'USER_CREATED_POLLS') {
+            /*if(this.props.type === 'USER_CREATED_POLLS') {
                 promise = getUserCreatedPolls(this.props.username, page, size);
             } else if (this.props.type === 'USER_VOTED_POLLS') {
                 promise = getUserVotedPolls(this.props.username, page, size);                               
-            }
+            }*/
+            promise = getAllActivities(page, size);
         } else {
-            promise = getAllPolls(page, size);
+            promise = getAllActivities(page, size);
         }
 
         if(!promise) {
@@ -47,17 +48,17 @@ class PollList extends Component {
 
         promise            
         .then(response => {
-            const polls = this.state.polls.slice();
-            const currentVotes = this.state.currentVotes.slice();
+            const activities = this.state.activities.slice();
+            //const currentVotes = this.state.currentVotes.slice();
 
             this.setState({
-                polls: polls.concat(response.content),
+                activities: activities.concat(response.content),
                 page: response.page,
                 size: response.size,
                 totalElements: response.totalElements,
                 totalPages: response.totalPages,
                 last: response.last,
-                currentVotes: currentVotes.concat(Array(response.content.length).fill(null)),
+                //currentVotes: currentVotes.concat(Array(response.content.length).fill(null)),
                 isLoading: false
             })
         }).catch(error => {
@@ -69,28 +70,28 @@ class PollList extends Component {
     }
 
     componentWillMount() {
-        this.loadPollList();
+        this.loadActivityList();
     }
 
     componentWillReceiveProps(nextProps) {
         if(this.props.isAuthenticated !== nextProps.isAuthenticated) {
             // Reset State
             this.setState({
-                polls: [],
+                activities: [],
                 page: 0,
                 size: 10,
                 totalElements: 0,
                 totalPages: 0,
                 last: true,
-                currentVotes: [],
+                //currentVotes: [],
                 isLoading: false
             });    
-            this.loadPollList();
+            this.loadActivityList();
         }
     }
 
     handleLoadMore() {
-        this.loadPollList(this.state.page + 1);
+        this.loadActivityList(this.state.page + 1);
     }
 
     handleVoteChange(event, pollIndex) {
@@ -142,29 +143,29 @@ class PollList extends Component {
     }
 
     render() {
-        const pollViews = [];
-        this.state.polls.forEach((poll, pollIndex) => {
-            pollViews.push(<Poll 
-                key={poll.id} 
-                poll={poll}
-                currentVote={this.state.currentVotes[pollIndex]} 
-                handleVoteChange={(event) => this.handleVoteChange(event, pollIndex)}
-                handleVoteSubmit={(event) => this.handleVoteSubmit(event, pollIndex)} />)            
+        const activityViews = [];
+        this.state.activities.forEach((activity, activityIndex) => {
+            activityViews.push(<Activity
+                key={activity.id}
+                activity={activity}
+                //currentVote={this.state.currentVotes[pollIndex]}
+                handleVoteChange={(event) => this.handleVoteChange(event, activityIndex)}
+                handleVoteSubmit={(event) => this.handleVoteSubmit(event, activityIndex)} />)
         });
 
         return (
-            <div className="polls-container">
-                {pollViews}
+            <div className="activities-container">
+                {activityViews}
                 {
-                    !this.state.isLoading && this.state.polls.length === 0 ? (
-                        <div className="no-polls-found">
-                            <span>No Polls Found.</span>
+                    !this.state.isLoading && this.state.activities.length === 0 ? (
+                        <div className="no-activities-found">
+                            <span>No Activities Found.</span>
                         </div>    
                     ): null
                 }  
                 {
                     !this.state.isLoading && !this.state.last ? (
-                        <div className="load-more-polls"> 
+                        <div className="load-more-activities">
                             <Button type="dashed" onClick={this.handleLoadMore} disabled={this.state.isLoading}>
                                 <Icon type="plus" /> Load more
                             </Button>
@@ -179,4 +180,4 @@ class PollList extends Component {
     }
 }
 
-export default withRouter(PollList);
+export default withRouter(ActivityList);

@@ -1,4 +1,4 @@
-import { API_BASE_URL, POLL_LIST_SIZE, ACCESS_TOKEN } from '../constants';
+import { API_BASE_URL, POLL_LIST_SIZE, ACCESS_TOKEN, ACTIVITY_LIST_SIZE } from '../constants';
 
 const request = (options) => {
     const headers = new Headers({
@@ -44,6 +44,16 @@ export function getAllTimers(page, size) {
     });
 }
 
+export function getAllActivities(page, size) {
+    page = page || 0;
+    size = size || ACTIVITY_LIST_SIZE;
+
+    return request({
+        url: API_BASE_URL + "/activity?page=" + page + "&size=" + size,
+        method: 'GET'
+    });
+}
+
 export function createPoll(pollData) {
     return request({
         url: API_BASE_URL + "/polls",
@@ -57,6 +67,14 @@ export function createTimer(timerData) {
         url: API_BASE_URL + "/timer",
         method: 'POST',
         body: JSON.stringify(timerData)
+    });
+}
+
+export function createActivity(activityData) {
+    return request({
+        url: API_BASE_URL + "/activity",
+        method: 'POST',
+        body: JSON.stringify(activityData)
     });
 }
 

@@ -11,8 +11,10 @@ import {ACCESS_TOKEN} from '../constants';
 
 import PollList from '../poll/PollList';
 import TimerList from '../timer/TimerList';
+import ActivityList from '../activity/ActivityList';
 import NewPoll from '../poll/NewPoll';
 import NewTimer from '../timer/NewTimer';
+import NewActivity from '../activity/NewActivity';
 import Login from '../user/login/Login';
 import Signup from '../user/signup/Signup';
 import Profile from '../user/profile/Profile';
@@ -114,6 +116,11 @@ class App extends Component {
                                                                 currentUser={this.state.currentUser}
                                                                 handleLogout={this.handleLogout} {...props} />}>
                             </Route>
+                            <Route exact path="/activities"
+                                       render={(props) => <ActivityList isAuthenticated={this.state.isAuthenticated}
+                                                                     currentUser={this.state.currentUser}
+                                                                     handleLogout={this.handleLogout} {...props} />}>
+                            </Route>
                             <Route path="/login"
                                    render={(props) => <Login onLogin={this.handleLogin} {...props} />}></Route>
                             <Route path="/signup" component={Signup}></Route>
@@ -125,6 +132,8 @@ class App extends Component {
                                           component={NewPoll} handleLogout={this.handleLogout}></PrivateRoute>
                             <PrivateRoute authenticated={this.state.isAuthenticated} path="/timer/new"
                                           component={NewTimer} handleLogout={this.handleLogout}></PrivateRoute>
+                            <PrivateRoute authenticated={this.state.isAuthenticated} path="/activity/new"
+                                          component={NewActivity} handleLogout={this.handleLogout}></PrivateRoute>
                             <Route component={NotFound}></Route>
                         </Switch>
                     </div>

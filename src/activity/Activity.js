@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Poll.css';
+import './Activity.css';
 import { Avatar, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import { getAvatarColor } from '../util/Colors';
@@ -8,20 +8,20 @@ import { formatDateTime } from '../util/Helpers';
 import { Radio, Button } from 'antd';
 const RadioGroup = Radio.Group;
 
-class Poll extends Component {
+class Activity extends Component {
     calculatePercentage = (choice) => {
-        if(this.props.poll.totalVotes === 0) {
+        if(this.props.activity.totalVotes === 0) {
             return 0;
         }
         return (choice.voteCount*100)/(this.props.poll.totalVotes);
     };
 
-    isSelected = (choice) => {
-        return this.props.poll.selectedChoice === choice.id;
+    isSelected = (timer) => {
+        return this.props.activity.selectedTimer === timer.id;
     }
 
     getWinningChoice = () => {
-        return this.props.poll.choices.reduce((prevChoice, currentChoice) => 
+        return this.props.activity.timers.reduce((prevChoice, currentChoice) =>
             currentChoice.voteCount > prevChoice.voteCount ? currentChoice : prevChoice, 
             {voteCount: -Infinity}
         );
@@ -55,69 +55,35 @@ class Poll extends Component {
     }
 
     render() {
-        const pollChoices = [];
-        if(this.props.poll.selectedChoice || this.props.poll.expired) {
-            const winningChoice = this.props.poll.expired ? this.getWinningChoice() : null;
+        const activityTimers = [];
 
-            this.props.poll.choices.forEach(choice => {
-                pollChoices.push(<CompletedOrVotedPollChoice 
-                    key={choice.id} 
-                    choice={choice}
-                    isWinner={winningChoice && choice.id === winningChoice.id}
-                    isSelected={this.isSelected(choice)}
-                    percentVote={this.calculatePercentage(choice)} 
-                />);
-            });                
-        } else {
-            this.props.poll.choices.forEach(choice => {
-                pollChoices.push(<Radio className="poll-choice-radio" key={choice.id} value={choice.id}>{choice.text}</Radio>)
-            })    
-        }        
+        this.props.activity.timers.forEach(timer => {
+            activityTimers.push(<Radio className="poll-choice-radio" key={timer.id} value={timer.id}>{timer.title}</Radio>)
+        })
+
         return (
             <div className="poll-content">
                 <div className="poll-header">
                     <div className="poll-creator-info">
-                        <Link className="creator-link" to={`/users/${this.props.poll.createdBy.username}`}>
+                        <Link className="creator-link" to={`/users/${this.props.activity.createdBy.username}`}>
                             <Avatar className="poll-creator-avatar" 
-                                style={{ backgroundColor: getAvatarColor(this.props.poll.createdBy.name)}} >
-                                {this.props.poll.createdBy.name[0].toUpperCase()}
+                                style={{ backgroundColor: getAvatarColor(this.props.activity.createdBy.name)}} >
+                                {this.props.activity.createdBy.name[0].toUpperCase()}
                             </Avatar>
                             <span className="poll-creator-name">
-                                {this.props.poll.createdBy.name}
+                                {this.props.activity.createdBy.name}
                             </span>
                             <span className="poll-creator-username">
-                                @{this.props.poll.createdBy.username}
+                                @{this.props.activity.createdBy.username}
                             </span>
                             <span className="poll-creation-date">
-                                {formatDateTime(this.props.poll.creationDateTime)}
+                                {formatDateTime(this.props.activity.creationDateTime)}
                             </span>
                         </Link>
                     </div>
                     <div className="poll-question">
-                        {this.props.poll.question}
+                        {this.props.activity.title}
                     </div>
-                </div>
-                <div className="poll-choices">
-                    <RadioGroup 
-                        className="poll-choice-radio-group" 
-                        onChange={this.props.handleVoteChange} 
-                        value={this.props.currentVote}>
-                        { pollChoices }
-                    </RadioGroup>
-                </div>
-                <div className="poll-footer">
-                    { 
-                        !(this.props.poll.selectedChoice || this.props.poll.expired) ?
-                        (<Button className="vote-button" disabled={!this.props.currentVote} onClick={this.props.handleVoteSubmit}>Vote</Button>) : null 
-                    }
-                    <span className="total-votes">{this.props.poll.totalVotes} votes</span>
-                    <span className="separator">•</span>
-                    <span className="time-left">
-                        {
-                            this.props.poll.expired ? "Final results" :
-                            this.getTimeRemaining(this.props.poll)
-                        }
-                    </span>
                 </div>
             </div>
         );
@@ -150,4 +116,4 @@ function CompletedOrVotedPollChoice(props) {
 }
 
 
-export default Poll;
+export default Activity;
