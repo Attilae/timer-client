@@ -107,7 +107,7 @@ class App extends Component {
                     <div className="container">
                         <Switch>
                             <Route exact path="/"
-                                   render={(props) => <TimerList isAuthenticated={this.state.isAuthenticated}
+                                   render={(props) => <ActivityList isAuthenticated={this.state.isAuthenticated}
                                                                 currentUser={this.state.currentUser}
                                                                 handleLogout={this.handleLogout} {...props} />}>
                             </Route>
@@ -122,18 +122,22 @@ class App extends Component {
                                                                      handleLogout={this.handleLogout} {...props} />}>
                             </Route>
                             <Route path="/login"
-                                   render={(props) => <Login onLogin={this.handleLogin} {...props} />}></Route>
+                                   render={(props) => <Login onLogin={this.handleLogin} {...props} />}>
+                            </Route>
                             <Route path="/signup" component={Signup}></Route>
                             <Route path="/users/:username"
                                    render={(props) => <Profile isAuthenticated={this.state.isAuthenticated}
                                                                currentUser={this.state.currentUser} {...props}  />}>
                             </Route>
                             <PrivateRoute authenticated={this.state.isAuthenticated} path="/poll/new"
-                                          component={NewPoll} handleLogout={this.handleLogout}></PrivateRoute>
+                                          component={NewPoll} handleLogout={this.handleLogout}>
+                            </PrivateRoute>
                             <PrivateRoute authenticated={this.state.isAuthenticated} path="/timer/new"
-                                          component={NewTimer} handleLogout={this.handleLogout}></PrivateRoute>
+                                          component={NewTimer} handleLogout={this.handleLogout} user={this.state.currentUser}>
+                            </PrivateRoute>
                             <PrivateRoute authenticated={this.state.isAuthenticated} path="/activity/new"
-                                          component={NewActivity} handleLogout={this.handleLogout}></PrivateRoute>
+                                          component={NewActivity} handleLogout={this.handleLogout}>
+                            </PrivateRoute>
                             <Route component={NotFound}></Route>
                         </Switch>
                     </div>

@@ -30,6 +30,11 @@ class AppHeader extends Component {
                         <Icon type="home" className="nav-icon"/>
                     </Link>
                 </Menu.Item>,
+                <Menu.Item key="/activity/new">
+                    <Link to="/activity/new">
+                        <img src={pollIcon} alt="poll" className="poll-icon"/>
+                    </Link>
+                </Menu.Item>,
                 <Menu.Item key="/timer/new">
                     <Link to="/timer/new">
                         <img src={pollIcon} alt="poll" className="poll-icon"/>

@@ -155,3 +155,13 @@ export function getUserVotedPolls(username, page, size) {
         method: 'GET'
     });
 }
+
+export function activitiesByUser(username, page, size) {
+    page = page || 0;
+    size = size || POLL_LIST_SIZE;
+
+    return request({
+        url: API_BASE_URL + "/users/" + username + "/activities?page=" + page + "&size=" + size,
+        method: 'GET'
+    });
+}

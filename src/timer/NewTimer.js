@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createTimer } from '../util/APIUtils';
+import { createTimer, activitiesByUser } from '../util/APIUtils';
 import { MAX_CHOICES, POLL_QUESTION_MAX_LENGTH, POLL_CHOICE_MAX_LENGTH } from '../constants';
 import './NewTimer.css';
 import { Form, Input, Button, Icon, Select, Col, notification } from 'antd';
@@ -19,10 +19,7 @@ class NewTimer extends Component {
             }, {
                 text: ''
             }],
-            pollLength: {
-                days: 1,
-                hours: 0
-            }
+            activities: []
         };
         this.addTag = this.addTag.bind(this);
         this.removeTag = this.removeTag.bind(this);
@@ -85,6 +82,20 @@ class NewTimer extends Component {
                 validateStatus: 'error',
                 errorMsg: `Question is too long (Maximum ${POLL_QUESTION_MAX_LENGTH} characters allowed)`
             }    
+        } else {
+            return {
+                validateStatus: 'success',
+                errorMsg: null
+            }
+        }
+    }
+
+    validateActivity = (activity) => {
+        if(activity.length === 0) {
+            return {
+                validateStatus: 'error',
+                errorMsg: 'Please enter your question!'
+            }
         } else {
             return {
                 validateStatus: 'success',
@@ -164,6 +175,32 @@ class NewTimer extends Component {
         }
     }
 
+    handleActivityChange(event) {
+        const value = event.target.value;
+        this.setState({
+            activity: {
+                text: value,
+                ...this.validateActivity(value)
+            }
+        });
+    }
+
+    componentDidMount() {
+        let promise;
+        promise = activitiesByUser(this.props.user.username);
+        promise
+            .then(response => {
+                const activities = this.state.polls.slice();
+            this.setState({
+                activities: activities.concat(response.content),
+            });
+        }).catch(error => {
+            this.setState({
+                isLoading: false
+            })
+        });
+    }
+
     render() {
         const tagViews = [];
         this.state.tags.forEach((tag, index) => {
@@ -190,6 +227,17 @@ class NewTimer extends Component {
                             <Button type="dashed" onClick={this.addTag} disabled={this.state.tags.length === MAX_CHOICES}>
                                 <Icon type="plus" /> Add a tag
                             </Button>
+                        </FormItem>
+                        <FormItem className="poll-form-row">
+                            <Select
+                                name="activity"
+                                defaultValue="0"
+                                onChange={this.handleActivityChange}
+                                value={this.state.activities} >
+                                {this.state.activities.map((e, key) => {
+                                    return <option key={key} value={e.value}>{e.name}</option>;
+                                })}
+                            </Select>
                         </FormItem>
                         <FormItem className="poll-form-row">
                             <Button type="primary" 
