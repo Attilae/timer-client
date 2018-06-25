@@ -5,7 +5,8 @@ import './NewTimer.css';
 import { Form, Input, Button, Icon, Select, Col, notification } from 'antd';
 const Option = Select.Option;
 const FormItem = Form.Item;
-const { TextArea } = Input
+const { TextArea } = Input;
+
 
 class NewTimer extends Component {
     constructor(props) {
@@ -19,13 +20,17 @@ class NewTimer extends Component {
             }, {
                 text: ''
             }],
-            activities: []
+            activities: [],
+            activity: {
+                text: ''
+            },
         };
         this.addTag = this.addTag.bind(this);
         this.removeTag = this.removeTag.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleTitleChange = this.handleTitleChange.bind(this);
         this.handleTagChange = this.handleTagChange.bind(this);
+        this.handleActivityChange = this.handleActivityChange.bind(this);
         this.handlePollDaysChange = this.handlePollDaysChange.bind(this);
         this.handlePollHoursChange = this.handlePollHoursChange.bind(this);
         this.isFormInvalid = this.isFormInvalid.bind(this);
@@ -53,7 +58,10 @@ class NewTimer extends Component {
             title: this.state.title.text,
             tags: this.state.tags.map(tag => {
                 return {text: tag.text}
-            })
+            }),
+            activityId: this.state.activity.text,
+            startDateTime: new Date(),
+            endDateTime: new Date()
         };
 
         createTimer(timerData)
@@ -106,6 +114,7 @@ class NewTimer extends Component {
 
     handleTitleChange(event) {
         const value = event.target.value;
+        console.log(value);
         this.setState({
             title: {
                 text: value,
@@ -134,6 +143,7 @@ class NewTimer extends Component {
     }
 
     handleTagChange(event, index) {
+        console.log(index);
         const tags = this.state.tags.slice();
         const value = event.target.value;
 
@@ -175,8 +185,7 @@ class NewTimer extends Component {
         }
     }
 
-    handleActivityChange(event) {
-        const value = event.target.value;
+    handleActivityChange(value) {
         this.setState({
             activity: {
                 text: value,
@@ -190,9 +199,9 @@ class NewTimer extends Component {
         promise = activitiesByUser(this.props.user.username);
         promise
             .then(response => {
-                const activities = this.state.polls.slice();
+                const activities = [];
             this.setState({
-                activities: activities.concat(response.content),
+                activities: response.content,
             });
         }).catch(error => {
             this.setState({
@@ -205,6 +214,14 @@ class NewTimer extends Component {
         const tagViews = [];
         this.state.tags.forEach((tag, index) => {
             tagViews.push(<TimerTag key={index} tag={tag} tagNumber={index} removeTag={this.removeTag} handleTagChange={this.handleTagChange}/>);
+        });
+        const activityOptions = [];
+        this.state.activities.forEach((activity) => {
+            activityOptions.push(<Option
+                key={activity.id}
+                title={activity.title}
+                value={activity.id}
+            >{activity.title}</Option>)
         });
 
         return (
@@ -229,14 +246,9 @@ class NewTimer extends Component {
                             </Button>
                         </FormItem>
                         <FormItem className="poll-form-row">
-                            <Select
-                                name="activity"
-                                defaultValue="0"
-                                onChange={this.handleActivityChange}
-                                value={this.state.activities} >
-                                {this.state.activities.map((e, key) => {
-                                    return <option key={key} value={e.value}>{e.name}</option>;
-                                })}
+                            <Select onChange={this.handleActivityChange}
+                                    onSelect={this.handleActivityChange}>
+                                {activityOptions}
                             </Select>
                         </FormItem>
                         <FormItem className="poll-form-row">
