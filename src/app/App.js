@@ -14,6 +14,7 @@ import TimerList from '../timer/TimerList';
 import ActivityList from '../activity/ActivityList';
 import NewPoll from '../poll/NewPoll';
 import NewTimer from '../timer/NewTimer';
+import Stopwatch from '../timer/Stopwatch';
 import NewActivity from '../activity/NewActivity';
 import Login from '../user/login/Login';
 import Signup from '../user/signup/Signup';
@@ -115,6 +116,12 @@ class App extends Component {
                                    render={(props) => <TimerList isAuthenticated={this.state.isAuthenticated}
                                                                 currentUser={this.state.currentUser}
                                                                 handleLogout={this.handleLogout} {...props} />}>
+                            </Route>
+                            <Route exact path="/timer"
+                                   render={(props) => <Stopwatch isAuthenticated={this.state.isAuthenticated}
+                                                                 stopwatches={["Session"]}
+                                                                 currentUser={this.state.currentUser}
+                                                                 handleLogout={this.handleLogout} {...props} />}>
                             </Route>
                             <Route exact path="/activities"
                                        render={(props) => <ActivityList isAuthenticated={this.state.isAuthenticated}
